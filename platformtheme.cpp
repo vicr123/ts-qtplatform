@@ -83,18 +83,56 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
     } else { //Use light colors
-        buttonCol = QColor(0, 200, 255);
-        buttonText = greyscale(0);
-        buttonDisabledCol = QColor(0, 150, 200);
-        buttonDisabledText = greyscale(100);
+
+        //Get Button Color
+        switch (settings->value("color/accent", 0).toInt()) {
+        case 0: //Blue
+            buttonCol = QColor(0, 200, 255);
+            buttonText = greyscale(0);
+            highlightCol = QColor(0, 175, 200);
+            highlightText = greyscale(0);
+            buttonDisabledCol = QColor(0, 150, 200);
+            buttonDisabledText = greyscale(100);
+            break;
+        case 1: //Green
+            buttonCol = QColor(0, 255, 128);
+            buttonText = greyscale(0);
+            highlightCol = QColor(0, 255, 0);
+            highlightText = greyscale(0);
+            buttonDisabledCol = QColor(0, 150, 50);
+            buttonDisabledText = greyscale(150);
+            break;
+        case 2: //Orange
+            buttonCol = QColor(255, 100, 0);
+            buttonText = greyscale(0);
+            highlightCol = QColor(255, 150, 50);
+            highlightText = greyscale(0);
+            buttonDisabledCol = QColor(150, 50, 0);
+            buttonDisabledText = greyscale(150);
+            break;
+        case 3: //Pink
+            buttonCol = QColor(255, 0, 255);
+            buttonText = greyscale(0);
+            highlightCol = QColor(255, 0, 255);
+            highlightText = greyscale(0);
+            buttonDisabledCol = QColor(100, 0, 100);
+            buttonDisabledText = greyscale(150);
+            break;
+        case 4: //Turquoise
+            buttonCol = QColor(0, 200, 150);
+            buttonText = greyscale(0);
+            highlightCol = QColor(0, 200, 150);
+            highlightText = greyscale(0);
+            buttonDisabledCol = QColor(0, 150, 150);
+            buttonDisabledText = greyscale(150);
+            break;
+        }
 
         //Set Normal colors
         pal->setColor(QPalette::Window, greyscale(235));
         pal->setColor(QPalette::WindowText, greyscale(0));
         pal->setColor(QPalette::Base, greyscale(235));
         pal->setColor(QPalette::Text, greyscale(0));
-        pal->setColor(QPalette::Highlight, QColor(0, 175, 200));
-        pal->setColor(QPalette::HighlightedText, greyscale(0));
         pal->setColor(QPalette::ToolTipText, greyscale(0));
 
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(100));
