@@ -14,7 +14,9 @@ QVariant PlatformTheme::themeHint(ThemeHint hint) const {
     case QPlatformTheme::StyleNames:
         return "contemporary";
     case QPlatformTheme::SystemIconThemeName:
-        return "breeze-dark";
+        return "breeze";
+    case QPlatformTheme::SystemIconFallbackThemeName:
+        return "breeze";
     case QPlatformTheme::ItemViewActivateItemOnSingleClick:
         return true;
     default:
