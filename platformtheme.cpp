@@ -25,6 +25,8 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 
     QColor buttonCol;
     QColor buttonText;
+    QColor buttonDisabledCol;
+    QColor buttonDisabledText;
     QColor highlightCol;
     QColor highlightText;
     if (settings->value("color/type", "dark") == "dark") { //Use dark colors
@@ -35,30 +37,40 @@ const QPalette* PlatformTheme::palette(Palette type) const {
             buttonText = greyscale(255);
             highlightCol = QColor(0, 80, 170);
             highlightText = greyscale(255);
+            buttonDisabledCol = QColor(0, 30, 100);
+            buttonDisabledText = QColor(greyscale(150));
             break;
         case 1: //Green
             buttonCol = QColor(0, 85, 0);
             buttonText = greyscale(255);
             highlightCol = QColor(0, 100, 0);
             highlightText = greyscale(255);
+            buttonDisabledCol = QColor(0, 50, 0);
+            buttonDisabledText = QColor(greyscale(150));
             break;
         case 2: //Orange
             buttonCol = QColor(200, 50, 0);
             buttonText = greyscale(255);
             highlightCol = QColor(200, 100, 0);
             highlightText = greyscale(255);
+            buttonDisabledCol = QColor(100, 25, 0);
+            buttonDisabledText = QColor(greyscale(150));
             break;
         case 3: //Pink
             buttonCol = QColor(150, 0, 150);
             buttonText = greyscale(255);
             highlightCol = QColor(200, 0, 200);
             highlightText = greyscale(255);
+            buttonDisabledCol = QColor(100, 0, 100);
+            buttonDisabledText = QColor(greyscale(150));
             break;
         case 4: //Turquoise
             buttonCol = QColor(0, 150, 100);
             buttonText = greyscale(255);
             highlightCol = QColor(0, 200, 150);
             highlightText = greyscale(255);
+            buttonDisabledCol = QColor(0, 100, 50);
+            buttonDisabledText = QColor(greyscale(150));
             break;
         }
 
@@ -69,13 +81,13 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::Text, greyscale(255));
         pal->setColor(QPalette::ToolTipText, greyscale(255));
 
-        //Set Disabled colors
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
-        pal->setColor(QPalette::Disabled, QPalette::Button, QColor(0, 30, 100));
-        pal->setColor(QPalette::Disabled, QPalette::ButtonText, greyscale(150));
     } else { //Use light colors
         buttonCol = QColor(0, 200, 255);
         buttonText = greyscale(0);
+        buttonDisabledCol = QColor(0, 150, 200);
+        buttonDisabledText = greyscale(100);
+
         //Set Normal colors
         pal->setColor(QPalette::Window, greyscale(235));
         pal->setColor(QPalette::WindowText, greyscale(0));
@@ -85,10 +97,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::HighlightedText, greyscale(0));
         pal->setColor(QPalette::ToolTipText, greyscale(0));
 
-        //Set Disabled colors
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(100));
-        pal->setColor(QPalette::Disabled, QPalette::Button, QColor(0, 150, 200));
-        pal->setColor(QPalette::Disabled, QPalette::ButtonText, greyscale(100));
     }
 
     //Set accent colours
@@ -96,6 +105,9 @@ const QPalette* PlatformTheme::palette(Palette type) const {
     pal->setColor(QPalette::ButtonText, buttonText);
     pal->setColor(QPalette::Highlight, highlightCol);
     pal->setColor(QPalette::HighlightedText, highlightText);
+    pal->setColor(QPalette::Disabled, QPalette::Button, buttonDisabledCol);
+    pal->setColor(QPalette::Disabled, QPalette::ButtonText, buttonDisabledText);
+
     return pal;
 }
 
