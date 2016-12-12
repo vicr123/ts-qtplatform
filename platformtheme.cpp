@@ -154,8 +154,8 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 const QFont* PlatformTheme::font(Font type) const {
     QFont* font;
     QString defaultFont;
-    if (QFontDatabase().families().contains("Rubik")) {
-        defaultFont = "Rubik";
+    if (QFontDatabase().families().contains("Contemporary")) {
+        defaultFont = "Contemporary";
     } else {
         defaultFont = "Noto Sans";
     }
