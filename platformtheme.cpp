@@ -15,6 +15,8 @@ QVariant PlatformTheme::themeHint(ThemeHint hint) const {
         return "contemporary";
     case QPlatformTheme::SystemIconThemeName:
         return "breeze-dark";
+    case QPlatformTheme::ItemViewActivateItemOnSingleClick:
+        return true;
     default:
         return QPlatformTheme::themeHint(hint);
     }
@@ -151,16 +153,23 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 
 const QFont* PlatformTheme::font(Font type) const {
     QFont* font;
+    QString defaultFont;
+    if (QFontDatabase().families().contains("Rubik")) {
+        defaultFont = "Rubik";
+    } else {
+        defaultFont = "Noto Sans";
+    }
+
     switch (type) {
     case FixedFont:
         font = new QFont(settings->value("fonts/monospaceFamily", "Hack").toString(), settings->value("fonts/monospaceSize", 9).toInt());
         break;
     case SmallFont:
     case MiniFont:
-        font = new QFont(settings->value("fonts/smallFamily", "Rubik").toString(), settings->value("fonts/smallSize", 8).toInt());
+        font = new QFont(settings->value("fonts/smallFamily", defaultFont).toString(), settings->value("fonts/smallSize", 8).toInt());
         break;
     default:
-        font = new QFont(settings->value("fonts/defaultFamily", "Rubik").toString(), settings->value("fonts/defaultSize", 10).toInt());
+        font = new QFont(settings->value("fonts/defaultFamily", defaultFont).toString(), settings->value("fonts/defaultSize", 10).toInt());
         break;
     }
 

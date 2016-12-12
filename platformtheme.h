@@ -10,6 +10,7 @@
 #include <QPalette>
 #include <QFont>
 #include <QDebug>
+#include <QFontDatabase>
 #include <kiconengine.h>
 #include <kiconloader.h>
 
