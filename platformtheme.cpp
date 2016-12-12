@@ -67,6 +67,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::WindowText, greyscale(255));
         pal->setColor(QPalette::Base, greyscale(40));
         pal->setColor(QPalette::Text, greyscale(255));
+        pal->setColor(QPalette::ToolTipText, greyscale(255));
 
         //Set Disabled colors
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
@@ -82,6 +83,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::Text, greyscale(0));
         pal->setColor(QPalette::Highlight, QColor(0, 175, 200));
         pal->setColor(QPalette::HighlightedText, greyscale(0));
+        pal->setColor(QPalette::ToolTipText, greyscale(0));
 
         //Set Disabled colors
         pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(100));

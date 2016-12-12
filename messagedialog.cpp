@@ -22,6 +22,12 @@ void MessageDialog::setText(QString text) {
     ui->messageLabel->setText(text);
 }
 
+void MessageDialog::setIcon(QIcon icon) {
+    this->setWindowIcon(icon);
+
+    ui->iconLabel->setPixmap(icon.pixmap(32, 32));
+}
+
 void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons) {
     ui->okButton->setVisible(false);
     ui->yesButton->setVisible(false);

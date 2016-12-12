@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui x11extras gui-private KIconThemes
+QT       += gui x11extras gui-private KIconThemes multimedia
 CONFIG   += c++14
 
 TARGET = ts-qtplatform
@@ -33,3 +33,6 @@ DISTFILES += \
 
 FORMS += \
     messagedialog.ui
+
+RESOURCES += \
+    resources.qrc

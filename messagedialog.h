@@ -22,6 +22,7 @@ public slots:
     void setTitle(QString title);
     void setText(QString text);
     void setButtons(QPlatformDialogHelper::StandardButtons buttons);
+    void setIcon(QIcon icon);
 
 signals:
     void clicked(QPlatformDialogHelper::StandardButton button, QPlatformDialogHelper::ButtonRole role);

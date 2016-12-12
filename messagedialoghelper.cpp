@@ -8,6 +8,25 @@ MessageDialogHelper::MessageDialogHelper() : QPlatformMessageDialogHelper()
 
 void MessageDialogHelper::exec() {
     updateWindowOptions();
+    switch (options().data()->icon()) {
+    case QMessageDialogOptions::Warning:
+    {
+        QSoundEffect* sound = new QSoundEffect();
+        sound->setSource(QUrl("qrc:/sounds/warn.wav"));
+        sound->play();
+        connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
+        break;
+    }
+    case QMessageDialogOptions::Critical:
+    {
+        QSoundEffect* sound = new QSoundEffect();
+        sound->setSource(QUrl("qrc:/sounds/critical.wav"));
+        sound->play();
+        connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
+        break;
+    }
+    }
+
     dialogWindow->exec();
 }
 
@@ -27,4 +46,19 @@ void MessageDialogHelper::updateWindowOptions() {
     dialogWindow->setTitle(options().data()->windowTitle());
     dialogWindow->setText(options().data()->text());
     dialogWindow->setButtons(options().data()->standardButtons());
+
+    switch (options().data()->icon()) {
+    case QMessageDialogOptions::Warning:
+        dialogWindow->setIcon(QIcon::fromTheme("dialog-warning"));
+        break;
+    case QMessageDialogOptions::Critical:
+        dialogWindow->setIcon(QIcon::fromTheme("dialog-error"));
+        break;
+    case QMessageDialogOptions::Question:
+        dialogWindow->setIcon(QIcon::fromTheme("dialog-question"));
+        break;
+    case QMessageDialogOptions::Information:
+        dialogWindow->setIcon(QIcon::fromTheme("dialog-information"));
+        break;
+    }
 }

@@ -4,6 +4,7 @@
 #include <qpa/qplatformdialoghelper.h>
 #include "messagedialog.h"
 #include <QWindow>
+#include <QSoundEffect>
 
 class MessageDialogHelper : public QPlatformMessageDialogHelper
 {

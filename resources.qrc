@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/sounds">
+        <file>critical.wav</file>
+        <file>warn.wav</file>
+    </qresource>
+</RCC>
