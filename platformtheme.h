@@ -4,6 +4,7 @@
 #include "ts-qtplatform_global.h"
 #include "messagedialoghelper.h"
 #include <qpa/qplatformtheme.h>
+#include <qpa/qplatformmenu.h>
 #include <QVariant>
 #include <QSettings>
 #include <QPalette>

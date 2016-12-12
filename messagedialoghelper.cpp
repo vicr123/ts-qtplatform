@@ -27,5 +27,4 @@ void MessageDialogHelper::updateWindowOptions() {
     dialogWindow->setTitle(options().data()->windowTitle());
     dialogWindow->setText(options().data()->text());
     dialogWindow->setButtons(options().data()->standardButtons());
-
 }

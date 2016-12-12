@@ -15,6 +15,7 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle(QString title) {
     ui->titleLabel->setText(title);
+    this->setWindowTitle(title);
 }
 
 void MessageDialog::setText(QString text) {
