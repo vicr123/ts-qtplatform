@@ -11,16 +11,18 @@ PlatformTheme::~PlatformTheme() {
 
 QVariant PlatformTheme::themeHint(ThemeHint hint) const {
     switch (hint) {
-    case QPlatformTheme::StyleNames:
-        return "contemporary";
-    case QPlatformTheme::SystemIconThemeName:
-        return "breeze";
-    case QPlatformTheme::SystemIconFallbackThemeName:
-        return "breeze";
-    case QPlatformTheme::ItemViewActivateItemOnSingleClick:
-        return true;
-    default:
-        return QPlatformTheme::themeHint(hint);
+        case QPlatformTheme::StyleNames:
+            return "contemporary";
+        case QPlatformTheme::SystemIconThemeName:
+            return "contemporary";
+        case QPlatformTheme::SystemIconFallbackThemeName:
+            return "contemporary";
+        case QPlatformTheme::ItemViewActivateItemOnSingleClick:
+            return true;
+        case QPlatformTheme::UiEffects:
+            return QPlatformTheme::AnimateComboUiEffect | QPlatformTheme::AnimateMenuUiEffect | QPlatformTheme::AnimateToolBoxUiEffect | QPlatformTheme::AnimateTooltipUiEffect;
+        default:
+            return QPlatformTheme::themeHint(hint);
     }
 }
 
@@ -82,6 +84,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::Window, greyscale(40));
         pal->setColor(QPalette::WindowText, greyscale(255));
         pal->setColor(QPalette::Base, greyscale(40));
+        pal->setColor(QPalette::AlternateBase, greyscale(60));
         pal->setColor(QPalette::Text, greyscale(255));
         pal->setColor(QPalette::ToolTipText, greyscale(255));
 
@@ -136,6 +139,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         pal->setColor(QPalette::Window, greyscale(235));
         pal->setColor(QPalette::WindowText, greyscale(0));
         pal->setColor(QPalette::Base, greyscale(235));
+        pal->setColor(QPalette::AlternateBase, greyscale(215));
         pal->setColor(QPalette::Text, greyscale(0));
         pal->setColor(QPalette::ToolTipText, greyscale(0));
 
@@ -179,7 +183,11 @@ const QFont* PlatformTheme::font(Font type) const {
 }
 
 QIconEngine* PlatformTheme::createIconEngine(const QString &iconName) const {
-    return new KIconEngine(iconName, KIconLoader::global());
+    if (settings->value("icons/useKDEEngine", true).toBool()) {
+        return new KIconEngine(iconName, new KIconLoader);
+    } else {
+        return new IconEngine(iconName);
+    }
 }
 
 QColor PlatformTheme::greyscale(int intensity) const {
@@ -209,4 +217,19 @@ QPlatformDialogHelper* PlatformTheme::createPlatformDialogHelper(DialogType type
     default:
         return NULL;
     }
+}
+
+QPlatformMenu* PlatformTheme::createPlatformMenu() const {
+    //return new PlatformMenu();
+    return NULL;
+}
+
+QPlatformMenuBar* PlatformTheme::createPlatformMenuBar() const {
+    //return new PlatformMenuBar;
+    return NULL;
+}
+
+QPlatformMenuItem* PlatformTheme::createPlatformMenuItem() const {
+    //return new PlatformMenuItem;
+    return NULL;
 }

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui x11extras gui-private KIconThemes multimedia
+QT       += gui x11extras gui-private KIconThemes multimedia concurrent svg
 CONFIG   += c++14
 
 TARGET = ts-qtplatform
@@ -15,13 +15,17 @@ DEFINES += TSQTPLATFORM_LIBRARY
 SOURCES += platformtheme.cpp \
     plugin.cpp \
     messagedialoghelper.cpp \
-    messagedialog.cpp
+    messagedialog.cpp \
+    iconengine.cpp \
+    platformmenu.cpp
 
 HEADERS += platformtheme.h\
         ts-qtplatform_global.h \
     plugin.h \
     messagedialoghelper.h \
-    messagedialog.h
+    messagedialog.h \
+    iconengine.h \
+    platformmenu.h
 
 unix {
     target.path = /usr/lib

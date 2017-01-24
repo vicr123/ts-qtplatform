@@ -3,8 +3,9 @@
 
 #include "ts-qtplatform_global.h"
 #include "messagedialoghelper.h"
+#include "iconengine.h"
+#include "platformmenu.h"
 #include <qpa/qplatformtheme.h>
-#include <qpa/qplatformmenu.h>
 #include <QVariant>
 #include <QSettings>
 #include <QPalette>
@@ -25,12 +26,15 @@ public:
     const QPalette* palette(Palette type) const override;
     const QFont* font(Font type) const override;
     QIconEngine* createIconEngine(const QString &iconName) const override;
-
+    QPlatformMenu* createPlatformMenu() const override;
+    QPlatformMenuBar* createPlatformMenuBar() const override;
+    QPlatformMenuItem* createPlatformMenuItem() const override;
     QPlatformDialogHelper* createPlatformDialogHelper(DialogType type) const override;
     bool usePlatformNativeDialog(DialogType type) const override;
 private:
     QColor greyscale(int intensity) const;
     QSettings* settings;
+    QMap<QString, IconEngine*> iconEngines;
 
     QFont* defaultFont;
 };

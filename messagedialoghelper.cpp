@@ -27,6 +27,8 @@ void MessageDialogHelper::exec() {
     }
     }
 
+    dialogWindow->setParent(NULL);
+
     dialogWindow->exec();
 }
 
@@ -34,6 +36,27 @@ bool MessageDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
     updateWindowOptions();
     dialogWindow->setWindowFlags(windowFlags);
     dialogWindow->setWindowModality(windowModality);
+    switch (options().data()->icon()) {
+    case QMessageDialogOptions::Warning:
+    {
+        QSoundEffect* sound = new QSoundEffect();
+        sound->setSource(QUrl("qrc:/sounds/warn.wav"));
+        sound->play();
+        connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
+        break;
+    }
+    case QMessageDialogOptions::Critical:
+    {
+        QSoundEffect* sound = new QSoundEffect();
+        sound->setSource(QUrl("qrc:/sounds/critical.wav"));
+        sound->play();
+        connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
+        break;
+    }
+    }
+
+    dialogWindow->setParent(parent);
+
     dialogWindow->show();
     return true;
 }

@@ -8,13 +8,13 @@
 
 class MessageDialogHelper : public QPlatformMessageDialogHelper
 {
-
+    Q_OBJECT
 public:
     explicit MessageDialogHelper();
 
     void exec() override;
     bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
-    void hide();
+    void hide() override;
 signals:
 
 public slots:
