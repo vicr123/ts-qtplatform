@@ -1,5 +1,7 @@
 #include "iconengine.h"
 
+QList<IconEngine::cacheIcon> IconEngine::memorySizes = QList<IconEngine::cacheIcon>();
+
 IconEngine::IconEngine(QString iconName) : QIconEngine()
 {
     icName = iconName;

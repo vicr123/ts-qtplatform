@@ -61,8 +61,8 @@ private:
     QList<iconInfo> listOfIcons;
     void tintImage(QImage &image, QColor tint) const;
     QFuture<QList<IconEngine::iconInfo>> pendingIcons;
-};
 
-inline QList<IconEngine::cacheIcon> memorySizes = QList<IconEngine::cacheIcon>();
+    static QList<IconEngine::cacheIcon> memorySizes;
+};
 
 #endif // ICONENGINE_H
