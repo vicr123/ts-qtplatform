@@ -11,7 +11,7 @@ IconEngine::IconEngine(QString iconName) : QIconEngine()
             return load(icName);
         }, iconName);*/
 
-        bool loadIcons = true;
+        /*bool loadIcons = true;
 
         for (int i = 0; i < memorySizes.count(); i++) {
             cacheIcon icon = memorySizes.at(i);
@@ -21,10 +21,10 @@ IconEngine::IconEngine(QString iconName) : QIconEngine()
             }
         }
 
-        if (loadIcons) {
+        if (loadIcons) {*/
             listOfIcons = load(icName);
 
-            for (iconInfo icons : listOfIcons) {
+            /*for (iconInfo icons : listOfIcons) {
                 QImage px(icons.fileName);
                 tintImage(px, QApplication::palette("QLabel").color(QPalette::WindowText));
 
@@ -33,8 +33,8 @@ IconEngine::IconEngine(QString iconName) : QIconEngine()
                 cache.size = icons.size;
                 cache.pm = QPixmap::fromImage(px);
                 memorySizes.append(cache);
-            }
-        }
+            }*/
+        //}
     }
 }
 
@@ -43,19 +43,15 @@ QList<IconEngine::iconInfo> IconEngine::load(QString icName) {
     QString theme = QIcon::themeName();
     //Theme search paths: ~/.local/usr/share/icons /usr/share/icons
 
-    //listOfIcons = getMatchingIcon(QDir::homePath() + "/.local/usr/share/icons/" + theme);
-    //if (listOfIcons.count() == 0) {
-        retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
+    retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
+    if (retval.count() == 0) {
+        retval = getMatchingIcon("/usr/share/icons/", icName, false);
         if (retval.count() == 0) {
-            retval = getMatchingIcon("/usr/share/icons/", icName, false);
             if (retval.count() == 0) {
-                //retval = getMatchingIcon("/usr/share/icons/breeze", icName);
-                if (retval.count() == 0) {
-                    retval = getMatchingIcon("/usr/share/icons/hicolor/", icName);
-                }
+                retval = getMatchingIcon("/usr/share/icons/hicolor/", icName);
             }
         }
-    //}
+    }
 
     return retval;
 }
@@ -68,13 +64,30 @@ QString IconEngine::iconName() const {
     }
 }
 
+QImage IconEngine::extractImage(QSharedMemory *sharedMemory) {
+    QBuffer imageData;
+    QDataStream input(&imageData);
+    QImage image;
+
+    if (!sharedMemory->isAttached()) {
+        sharedMemory->attach(QSharedMemory::ReadOnly);
+    }
+    sharedMemory->lock();
+    imageData.setData((char*) sharedMemory->data(), sharedMemory->size());
+    imageData.open(QBuffer::ReadOnly);
+    input >> image;
+    sharedMemory->unlock();
+
+    return image;
+}
+
 void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) {
-    for (cacheIcon icon : memorySizes) {
+    /*for (cacheIcon icon : memorySizes) {
         if ((icon.name == icName) && (icon.size == rect.width())) {
             painter->drawPixmap(rect, icon.pm);
             return;
         }
-    }
+    }*/
 
     /*if (pendingIcons.isRunning()) {
         pendingIcons.waitForFinished();
@@ -83,47 +96,75 @@ void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, Q
 
     if (listOfIcons.count() > 0) {
         QString fileName;
-        for (iconInfo info : listOfIcons) {
+        int currentIcon = -1;
+        QImage px;
+        bool imageLoaded = false;
+
+        for (int i = 0; i < listOfIcons.count(); i++) {
+            iconInfo info = listOfIcons.at(i);
             if (info.size == rect.width()) {
-                fileName = info.fileName;
+                if (!info.iconData->isAttached()) info.iconData->attach();
+                if (info.iconData->isAttached() && info.iconData->size() != 0) {
+                    px = extractImage(info.iconData);
+                    if (!px.isNull()) {
+                        imageLoaded = true;
+                    } else {
+                        fileName = info.fileName;
+                    }
+                } else {
+                    fileName = info.fileName;
+                }
+                currentIcon = i;
             }
         }
 
-        if (fileName == "") {
-            int currentSize;
-            for (iconInfo info : listOfIcons) {
-                if ((info.size > rect.width()) && (info.size < currentSize)) {
-                    fileName = info.fileName;
-                    currentSize = info.size;
+        if (!imageLoaded) {
+            if (fileName == "") {
+                int currentSize;
+                for (int i = 0; i < listOfIcons.count(); i++) {
+                    iconInfo info = listOfIcons.at(i);
+                    if ((info.size > rect.width()) && (info.size < currentSize)) {
+                        fileName = info.fileName;
+                        currentSize = info.size;
+                        currentIcon = i;
+                    }
+                }
+
+                if (fileName == "") {
+                    fileName = listOfIcons.first().fileName;
+                    currentIcon = 0;
                 }
             }
 
-            if (fileName == "") {
-                fileName = listOfIcons.first().fileName;
+            QString suffix = fileName;
+            suffix = suffix.mid(suffix.lastIndexOf(".") + 1);
+            if (suffix == "svg") {
+                px = QImage(rect.size(), QImage::Format_ARGB32);
+                px.fill(Qt::transparent);
+                QSvgRenderer renderer(fileName);
+                QPainter painter(&px);
+                renderer.render(&painter);
+            } else {
+                px = QImage(fileName);
             }
-        }
+            tintImage(px, QApplication::palette("QLabel").color(QPalette::WindowText));
 
-        QString suffix = fileName;
-        suffix = suffix.mid(suffix.lastIndexOf(".") + 1);
-        QImage px;
-        if (suffix == "svg") {
-            px = QImage(rect.size(), QImage::Format_ARGB32);
-            px.fill(Qt::transparent);
-            QSvgRenderer renderer(fileName);
-            QPainter painter(&px);
-            renderer.render(&painter);
-        } else {
-            px = QImage(fileName);
+            QBuffer imageData;
+            imageData.open(QBuffer::ReadWrite);
+            QDataStream output(&imageData);
+            output << px;
+
+            iconInfo icInfo = listOfIcons.at(currentIcon);
+            //icInfo.iconData = new QSharedMemory("ts-qtpl.icon." + icName + "." + QString::number(rect.size().width()));
+            icInfo.iconData->create(imageData.size());
+
+            icInfo.iconData->lock();
+            memcpy((char*) icInfo.iconData->data(), imageData.data().data(), qMin(icInfo.iconData->size(), (int) imageData.size()));
+            icInfo.iconData->unlock();
+            listOfIcons.replace(currentIcon, icInfo);
         }
         painter->setRenderHint(QPainter::SmoothPixmapTransform);
-        tintImage(px, QApplication::palette("QLabel").color(QPalette::WindowText));
         painter->drawImage(rect, px);
-
-        cacheIcon cache;
-        cache.name = icName;
-        cache.size = rect.width();
-        cache.pm = QPixmap::fromImage(px);
-        memorySizes.append(cache);
     }
 }
 
@@ -161,6 +202,7 @@ QList<IconEngine::iconInfo> IconEngine::getMatchingIcon(QString searchPath, QStr
                     iconInfo icInfo;
                     icInfo.fileName = iterator->filePath();
                     icInfo.size = ic.size().width();
+                    icInfo.iconData = new QSharedMemory("ts-qtpl.icon." + icName + "." + QString::number(ic.size().width()));
 
                     retval.append(icInfo);
                 //}
@@ -189,23 +231,22 @@ QPixmap IconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State sta
 }
 
 void IconEngine::tintImage(QImage &image, QColor tint) const {
-    bool doPaint = true;
+    //bool doPaint = true;
+    int failNum = 0;
     for (int y = 0; y < image.height(); y++) {
         for (int x = 0; x < image.width(); x++) {
             QColor pixelCol = image.pixelColor(x, y);
+            //int blue = pixelCol.blue(), green = pixelCol.green(), red = pixelCol.red();
             if ((pixelCol.blue() > pixelCol.green() - 10 && pixelCol.blue() < pixelCol.green() + 10) &&
                     (pixelCol.green() > pixelCol.red() - 10 && pixelCol.green() < pixelCol.red() + 10)) {
             } else {
-                doPaint = false;
-
-                //Break out of loop
-                x = image.width();
-                y = image.height();
+                failNum++;
+                //doPaint = false;
             }
         }
     }
 
-    if (doPaint) {
+    if (failNum < (image.size().width() * image.size().height()) / 8) {
         QPainter painter(&image);
         painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
         painter.fillRect(0, 0, image.width(), image.height(), tint);
@@ -215,10 +256,8 @@ void IconEngine::tintImage(QImage &image, QColor tint) const {
 
 QList<QSize> IconEngine::availableSizes(QIcon::Mode mode, QIcon::State state) const {
     QList<QSize> retval;
-    for (cacheIcon icon : memorySizes) {
-        if (icon.name == icName) {
-            retval.append(QSize(icon.size, icon.size));
-        }
+    for (iconInfo icon : listOfIcons) {
+        retval.append(QSize(icon.size, icon.size));
     }
     return retval;
 }

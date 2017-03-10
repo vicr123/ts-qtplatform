@@ -13,6 +13,8 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QSvgRenderer>
+#include <QSharedMemory>
+#include <QBuffer>
 
 class IconEngine : public QIconEngine
 {
@@ -22,6 +24,7 @@ public:
     struct iconInfo {
         QString fileName;
         int size;
+        QSharedMemory* iconData = NULL;
 
         bool operator==(const iconInfo& other) const {
             if ((this->fileName == other.fileName) && (this->size == other.size)) {
@@ -54,6 +57,7 @@ public:
     QList<QSize> availableSizes(QIcon::Mode mode, QIcon::State state) const;
     bool isNull();
     QList<IconEngine::iconInfo> load(QString icName);
+    QImage extractImage(QSharedMemory* sharedMemory);
 
 private:
     QString icName;
