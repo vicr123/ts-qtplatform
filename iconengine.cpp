@@ -72,6 +72,7 @@ QImage IconEngine::extractImage(QSharedMemory *sharedMemory) {
     if (!sharedMemory->isAttached()) {
         sharedMemory->attach(QSharedMemory::ReadOnly);
     }
+
     sharedMemory->lock();
     imageData.setData((char*) sharedMemory->data(), sharedMemory->size());
     imageData.open(QBuffer::ReadOnly);
@@ -103,8 +104,11 @@ void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, Q
         for (int i = 0; i < listOfIcons.count(); i++) {
             iconInfo info = listOfIcons.at(i);
             if (info.size == rect.width()) {
-                if (!info.iconData->isAttached()) info.iconData->attach();
-                if (info.iconData->isAttached() && info.iconData->size() != 0) {
+                if (!info.iconData->isAttached()) {
+                    if (!info.iconData->attach()) {
+                        fileName = info.fileName;
+                    }
+                } else if (info.iconData->isAttached() && info.iconData->size() != 0) {
                     px = extractImage(info.iconData);
                     if (!px.isNull()) {
                         imageLoaded = true;
