@@ -183,7 +183,7 @@ const QFont* PlatformTheme::font(Font type) const {
 }
 
 QIconEngine* PlatformTheme::createIconEngine(const QString &iconName) const {
-    if (settings->value("icons/useKDEEngine", true).toBool()) {
+    if (settings->value("icons/useKDEEngine", false).toBool()) {
         return new KIconEngine(iconName, new KIconLoader);
     } else {
         return new IconEngine(iconName);
