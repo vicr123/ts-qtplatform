@@ -5,6 +5,7 @@
 #include "messagedialoghelper.h"
 #include "iconengine.h"
 #include "platformmenu.h"
+#include "filedialoghelper.h"
 #include <qpa/qplatformtheme.h>
 #include <QVariant>
 #include <QSettings>
@@ -12,8 +13,6 @@
 #include <QFont>
 #include <QDebug>
 #include <QFontDatabase>
-#include <kiconengine.h>
-#include <kiconloader.h>
 
 class TSQTPLATFORMSHARED_EXPORT PlatformTheme : public QPlatformTheme
 {
