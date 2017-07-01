@@ -12,11 +12,11 @@ PlatformTheme::~PlatformTheme() {
 QVariant PlatformTheme::themeHint(ThemeHint hint) const {
     switch (hint) {
         case QPlatformTheme::StyleNames:
-            return "contemporary";
+            return settings->value("style/name", "contemporary").toString();
         case QPlatformTheme::SystemIconThemeName:
-            return "contemporary";
+            return settings->value("icons/theme", "contemporary").toString();
         case QPlatformTheme::SystemIconFallbackThemeName:
-            return "contemporary";
+            return settings->value("icons/themeFallback", "contemporary").toString();
         case QPlatformTheme::ItemViewActivateItemOnSingleClick:
             return true;
         case QPlatformTheme::UiEffects:
