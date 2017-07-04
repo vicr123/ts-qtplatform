@@ -13,6 +13,8 @@
 #include <QFont>
 #include <QDebug>
 #include <QFontDatabase>
+#include <QX11Info>
+#include <X11/Xcursor/Xcursor.h>
 
 class TSQTPLATFORMSHARED_EXPORT PlatformTheme : public QPlatformTheme
 {

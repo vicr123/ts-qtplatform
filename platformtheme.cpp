@@ -3,6 +3,32 @@
 PlatformTheme::PlatformTheme()
 {
     settings = new QSettings("theSuite", "ts-qtplatform");
+
+    {
+        //Load cursor library
+        QLibrary xc("/usr/lib/libXcursor");
+
+        if (xc.load()) {
+            typedef int (*setThemeFunc) (Display*, const char*);
+            typedef int (*setSizeFunc) (Display*, int);
+            typedef int (*loadCurFunc) (Display*, const char*);
+            typedef int (*defCurFunc) (Display*, unsigned long, unsigned long);
+            typedef int (*freeCurFunc) (Display*, unsigned long);
+
+            auto XcursorSetTheme = (setThemeFunc) xc.resolve("XcursorSetTheme");
+            auto XcursorSetDefaultSize = (setSizeFunc) xc.resolve("XcursorSetDefaultSize");
+            auto XcursorLibraryLoadCursor = (loadCurFunc) xc.resolve("XcursorLibraryLoadCursor");
+            auto XDefineCursor = (defCurFunc) xc.resolve("XDefineCursor");
+            auto XFreeCursor = (freeCurFunc) xc.resolve("XFreeCursor");
+            //Set cursors
+            XcursorSetTheme(QX11Info::display(), "contemporary_cursors");
+            XcursorSetDefaultSize(QX11Info::display(), 24);
+
+            Cursor cursor = XcursorLibraryLoadCursor(QX11Info::display(), "left_ptr");
+            XDefineCursor(QX11Info::display(), QX11Info::appRootWindow(), cursor);
+            XFreeCursor(QX11Info::display(), cursor);
+        }
+    }
 }
 
 PlatformTheme::~PlatformTheme() {
