@@ -5,12 +5,12 @@
 #-------------------------------------------------
 
 QT       += gui x11extras gui-private multimedia concurrent svg
-CONFIG   += c++14
+CONFIG   += c++14 plugin
 
-TARGET = ts-qtplatform
+TARGET = ts
 TEMPLATE = lib
 
-DEFINES += TSQTPLATFORM_LIBRARY
+DEFINES += TSQTPLAaTFORM_LIBRARY
 
 SOURCES += platformtheme.cpp \
     plugin.cpp \
@@ -32,7 +32,7 @@ HEADERS += platformtheme.h\
     filedialog.h
 
 unix {
-    target.path = /usr/lib
+    target.path = /usr/lib/qt/plugins/platformthemes/
     INSTALLS += target
 }
 
