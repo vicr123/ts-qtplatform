@@ -178,7 +178,7 @@ QList<IconEngine::iconInfo> IconEngine::getMatchingIcon(QString searchPath, QStr
     if (path.exists()) {
         QDirIterator* iterator;
         if (subdirectories) {
-            iterator = new QDirIterator(path, QDirIterator::Subdirectories);
+            iterator = new QDirIterator(path, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
         } else {
             iterator = new QDirIterator(path);
         }

@@ -14,7 +14,45 @@
 #include <QDebug>
 #include <QFontDatabase>
 #include <QX11Info>
+#include <QStyleFactory>
+#include <QTimer>
+#include <QtDBus/QDBusConnection>
 #include <X11/Xcursor/Xcursor.h>
+#include <signal.h>
+#include <QThread>
+
+class ThemeCheckThread : public QThread
+{
+    Q_OBJECT
+    void run();
+
+public:
+    explicit ThemeCheckThread(QObject* parent = NULL);
+
+signals:
+    void UpdateTheme();
+
+private:
+    QTimer* pollSettingsTimer;
+    QString currentStyle;
+    QString currentColor;
+    int currentAccent;
+
+    QSettings* settings;
+};
+
+class ThemeUpdate : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ThemeUpdate(QObject* parent = NULL);
+
+public slots:
+    void UpdateTheme();
+
+private:
+    QSettings* settings;
+};
 
 class TSQTPLATFORMSHARED_EXPORT PlatformTheme : public QPlatformTheme
 {
@@ -32,10 +70,14 @@ public:
     QPlatformMenuItem* createPlatformMenuItem() const override;
     QPlatformDialogHelper* createPlatformDialogHelper(DialogType type) const override;
     bool usePlatformNativeDialog(DialogType type) const override;
+
 private:
     QColor greyscale(int intensity) const;
     QSettings* settings;
     QMap<QString, IconEngine*> iconEngines;
+
+    ThemeUpdate* themeUpdate;
+    ThemeCheckThread* themeThread;
 
     QFont* defaultFont;
 };

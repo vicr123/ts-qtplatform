@@ -1,5 +1,8 @@
 #include "platformtheme.h"
 
+void catch_signal(int signal);
+__sighandler_t oldSignalHandler;
+
 PlatformTheme::PlatformTheme()
 {
     settings = new QSettings("theSuite", "ts-qtplatform");
@@ -29,10 +32,79 @@ PlatformTheme::PlatformTheme()
             XFreeCursor(QX11Info::display(), cursor);
         }
     }
+    //oldSignalHandler = signal(SIGTSTP, catch_signal);
+
+    themeUpdate = new ThemeUpdate();
+    themeThread = new ThemeCheckThread();
+    QObject::connect(themeThread, SIGNAL(UpdateTheme()), themeUpdate, SLOT(UpdateTheme()));
+    themeThread->start();
+}
+
+ThemeCheckThread::ThemeCheckThread(QObject *parent) : QThread(parent) {
+    settings = new QSettings("theSuite", "ts-qtplatform");
+}
+
+ThemeUpdate::ThemeUpdate(QObject *parent) : QObject(parent) {
+    settings = new QSettings("theSuite", "ts-qtplatform");
+}
+
+void ThemeUpdate::UpdateTheme() {
+    QApplication::setStyle(QStyleFactory::create(settings->value("style/name", "contemporary").toString()));
+}
+
+void ThemeCheckThread::run() {
+    currentStyle = settings->value("style/name", "contemporary").toString();
+    currentColor = settings->value("color/type", "dark").toString();
+    currentAccent = settings->value("color/accent", 0).toInt();
+
+    pollSettingsTimer = new QTimer();
+    pollSettingsTimer->setInterval(1000);
+    pollSettingsTimer->connect(pollSettingsTimer, &QTimer::timeout, [=] {
+        QSettings* settings = new QSettings("theSuite", "ts-qtplatform");
+        bool reloadStyle = false;
+        if (currentStyle != settings->value("style/name", "contemporary").toString()) {
+            reloadStyle = true;
+        }
+        currentStyle = settings->value("style/name", "contemporary").toString();
+
+        if (currentColor != settings->value("color/type", "dark").toString()) {
+            reloadStyle = true;
+        }
+        currentColor = settings->value("color/type", "dark").toString();
+
+        if (currentAccent != settings->value("color/accent", 0).toInt()) {
+            reloadStyle = true;
+        }
+        currentAccent = settings->value("color/accent", 0).toInt();
+
+        if (reloadStyle) {
+            emit UpdateTheme();
+        }
+    });
+    pollSettingsTimer->start();
+
+    this->exec();
+
+    pollSettingsTimer->stop();
+    pollSettingsTimer->deleteLater();
+}
+
+void catch_signal(int sig) {
+    if (sig == SIGTSTP) {
+        qDebug() << "SIGTSTP";
+        signal(SIGTSTP, SIG_DFL);
+        raise(SIGTSTP);
+        oldSignalHandler = signal(SIGTSTP, catch_signal);
+    }
 }
 
 PlatformTheme::~PlatformTheme() {
+    signal(SIGTSTP, oldSignalHandler);
     settings->deleteLater();
+    themeThread->quit();
+    themeThread->deleteLater();
+    themeUpdate->deleteLater();
+    //pollSettingsTimer->deleteLater();
 }
 
 QVariant PlatformTheme::themeHint(ThemeHint hint) const {
@@ -81,7 +153,9 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         QColor buttonDisabledText;
         QColor highlightCol;
         QColor highlightText;
-        if (settings->value("color/type", "dark") == "dark") { //Use dark colors
+
+        QString colourType = settings->value("color/type", "dark").toString();
+        if (colourType == "dark") { //Use dark colors
             //Get Button Color
             switch (settings->value("color/accent", 0).toInt()) {
             case 0: //Blue
@@ -135,7 +209,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
             pal->setColor(QPalette::ToolTipText, greyscale(255));
 
             pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
-        } else { //Use light colors
+        } else if (colourType == "light") { //Use light colors
 
             //Get Button Color
             switch (settings->value("color/accent", 0).toInt()) {
@@ -190,6 +264,26 @@ const QPalette* PlatformTheme::palette(Palette type) const {
             pal->setColor(QPalette::ToolTipText, greyscale(0));
 
             pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(100));
+        } else if (colourType == "decorative") { //Set decorative colours
+            //Get Colours
+            switch (settings->value("color/accent", 0).toInt()) {
+                case 0: //Oxygen
+                    buttonCol = QColor(223, 220, 217);
+                    buttonText = QColor(34, 31, 30);
+                    highlightCol = QColor(67, 172, 232);
+                    highlightText = greyscale(255);
+                    buttonDisabledCol = QColor(240, 243, 237);
+                    buttonDisabledText = greyscale(50);
+
+                    pal->setColor(QPalette::Window, QColor(214, 210, 208));
+                    pal->setColor(QPalette::WindowText, QColor(34, 31, 30));
+                    pal->setColor(QPalette::Base, greyscale(255));
+                    pal->setColor(QPalette::AlternateBase, QColor(248, 247, 246));
+                    pal->setColor(QPalette::Text, QColor(31, 28, 27));
+                    pal->setColor(QPalette::ToolTipText, QColor(31, 28, 27));
+
+                    pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(50));
+            }
         }
 
         //Set accent colours
