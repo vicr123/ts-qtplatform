@@ -78,7 +78,7 @@ void ThemeCheckThread::run() {
         currentAccent = settings->value("color/accent", 0).toInt();
 
         if (reloadStyle) {
-            emit UpdateTheme();
+            //emit UpdateTheme();
         }
     });
     pollSettingsTimer->start();
@@ -264,6 +264,61 @@ const QPalette* PlatformTheme::palette(Palette type) const {
             pal->setColor(QPalette::ToolTipText, greyscale(0));
 
             pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(100));
+        } else if (colourType == "gray") { //Use gray colors
+
+            //Get Button Color
+            switch (settings->value("color/accent", 0).toInt()) {
+            case 0: //Blue
+                buttonCol = QColor(25, 96, 122);
+                buttonText = greyscale(255);
+                highlightCol = QColor(25, 96, 122);
+                highlightText = greyscale(255);
+                buttonDisabledCol = QColor(20, 80, 110);
+                buttonDisabledText = QColor(greyscale(150));
+                break;
+            case 1: //Green
+                buttonCol = QColor(36, 122, 26);
+                buttonText = greyscale(255);
+                highlightCol = QColor(36, 122, 26);
+                highlightText = greyscale(255);
+                buttonDisabledCol = QColor(20, 68, 14);
+                buttonDisabledText = QColor(greyscale(150));
+                break;
+            case 2: //Orange
+                buttonCol = QColor(176, 111, 31);
+                buttonText = greyscale(255);
+                highlightCol = QColor(176, 111, 31);
+                highlightText = greyscale(255);
+                buttonDisabledCol = QColor(90, 57, 16);
+                buttonDisabledText = QColor(greyscale(150));
+                break;
+            case 3: //Pink
+                buttonCol = QColor(220, 58, 212);
+                buttonText = greyscale(255);
+                highlightCol = QColor(220, 58, 212);
+                highlightText = greyscale(255);
+                buttonDisabledCol = QColor(93, 27, 95);
+                buttonDisabledText = QColor(greyscale(150));
+                break;
+            case 4: //Turquoise
+                buttonCol = QColor(39, 130, 115);
+                buttonText = greyscale(255);
+                highlightCol = QColor(39, 130, 115);
+                highlightText = greyscale(255);
+                buttonDisabledCol = QColor(29, 95, 84);
+                buttonDisabledText = QColor(greyscale(150));
+                break;
+            }
+
+            //Set Normal colors
+            pal->setColor(QPalette::Window, greyscale(80));
+            pal->setColor(QPalette::WindowText, greyscale(255));
+            pal->setColor(QPalette::Base, greyscale(80));
+            pal->setColor(QPalette::AlternateBase, greyscale(100));
+            pal->setColor(QPalette::Text, greyscale(255));
+            pal->setColor(QPalette::ToolTipText, greyscale(255));
+
+            pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
         } else if (colourType == "decorative") { //Set decorative colours
             //Get Colours
             switch (settings->value("color/accent", 0).toInt()) {

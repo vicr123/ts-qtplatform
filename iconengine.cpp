@@ -43,7 +43,11 @@ QList<IconEngine::iconInfo> IconEngine::load(QString icName) {
     QString theme = QIcon::themeName();
     //Theme search paths: ~/.local/usr/share/icons /usr/share/icons
 
-    retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
+    if (theme.startsWith("local:")) {
+        retval = getMatchingIcon(QDir::homePath() + "/.local/share/icons/" + theme.mid(6), icName);
+    } else {
+        retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
+    }
     if (retval.count() == 0) {
         retval = getMatchingIcon("/usr/share/icons/", icName, false);
         if (retval.count() == 0) {
