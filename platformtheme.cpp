@@ -78,7 +78,7 @@ void ThemeCheckThread::run() {
         currentAccent = settings->value("color/accent", 0).toInt();
 
         if (reloadStyle) {
-            //emit UpdateTheme();
+            emit UpdateTheme();
         }
     });
     pollSettingsTimer->start();
