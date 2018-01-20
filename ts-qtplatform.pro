@@ -32,7 +32,7 @@ HEADERS += platformtheme.h\
     filedialog.h
 
 unix {
-    target.path = /usr/lib/qt/plugins/platformthemes/
+    target.path = $$[QT_INSTALL_PLUGINS]/platformthemes/
     INSTALLS += target
 }
 
