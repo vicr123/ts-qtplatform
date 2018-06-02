@@ -43,21 +43,36 @@ QList<IconEngine::iconInfo> IconEngine::load(QString icName) {
     QString theme = QIcon::themeName();
     //Theme search paths: ~/.local/usr/share/icons /usr/share/icons
 
-    if (theme.startsWith("local:")) {
-        retval = getMatchingIcon(QDir::homePath() + "/.local/share/icons/" + theme.mid(6), icName);
-    } else {
-        retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
-    }
-    if (retval.count() == 0) {
-        retval = getMatchingIcon("/usr/share/icons/", icName, false);
-        if (retval.count() == 0) {
-            if (retval.count() == 0) {
-                retval = getMatchingIcon("/usr/share/icons/hicolor/", icName);
-            }
+    auto loader = [=](QString icName) {
+        QList<IconEngine::iconInfo> retval;
+        if (theme.startsWith("local:")) {
+            retval = getMatchingIcon(QDir::homePath() + "/.local/share/icons/" + theme.mid(6), icName);
+        } else {
+            retval = getMatchingIcon("/usr/share/icons/" + theme, icName);
         }
+
+        if (retval.count() != 0) return retval;
+
+        retval = getMatchingIcon("/usr/share/icons/", icName, false);
+        if (retval.count() != 0) return retval;
+
+        retval = getMatchingIcon("/usr/share/icons/hicolor/", icName);
+        if (retval.count() != 0) return retval;
+
+        retval = getMatchingIcon("/usr/share/pixmaps/", icName);
+        if (retval.count() != 0) return retval;
+
+        retval = getMatchingIcon(QDir::homePath() + "/.local/share/icons/hicolor/", icName);
+        return retval;
+    };
+
+    //Search for right-to-left icons first
+    if (QApplication::layoutDirection() == Qt::RightToLeft) {
+        retval = loader(icName + "-rtl");
+        if (retval.count() != 0) return retval;
     }
 
-    return retval;
+    return loader(icName);
 }
 
 QString IconEngine::iconName() const {
@@ -190,10 +205,11 @@ QList<IconEngine::iconInfo> IconEngine::getMatchingIcon(QString searchPath, QStr
         while (iterator->hasNext()) {
             iterator->next();
 
-            //QFileInfo info = iterator->fileInfo();
-            QString baseName = iterator->filePath();
-            baseName = baseName.mid(baseName.lastIndexOf("/") + 1);
-            baseName = baseName.left(baseName.indexOf("."));
+            QFileInfo info = iterator->fileInfo();
+            QString baseName = info.completeBaseName();
+            //QString baseName = iterator->filePath();
+            //baseName = baseName.mid(baseName.lastIndexOf("/") + 1);
+            //baseName = baseName.left(baseName.indexOf("."));
             if (baseName.toLower() == icName.toLower()) {
                 QString suffix = iterator->filePath();
                 suffix = suffix.mid(suffix.lastIndexOf(".") + 1);

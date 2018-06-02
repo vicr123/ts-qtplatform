@@ -7,6 +7,8 @@
 #include <qpa/qplatformdialoghelper.h>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QLayout>
+#include <QBoxLayout>
 
 namespace Ui {
 class MessageDialog;
@@ -27,6 +29,7 @@ public slots:
     void setIcon(QIcon icon);
     void setParent(QWindow* parent);
     void setWindowFlags(Qt::WindowFlags type);
+    void setSliceColor(QColor col);
     void show();
     int exec();
 
@@ -35,29 +38,12 @@ public slots:
 signals:
     void clicked(QPlatformDialogHelper::StandardButton button, QPlatformDialogHelper::ButtonRole role);
 
-private slots:
-    void on_okButton_clicked();
-
-    void on_yesButton_clicked();
-
-    void on_noButton_clicked();
-
-    void on_cancelButton_clicked();
-
-    void on_saveButton_clicked();
-
-    void on_saveAllButton_clicked();
-
-    void on_discardButton_clicked();
-
-    void on_closeButton_clicked();
-
-
 private:
     Ui::MessageDialog *ui;
 
     void paintEvent(QPaintEvent* event);
     QWindow* parent = NULL;
+    QColor sliceColor = QColor(Qt::transparent);
     Qt::WindowFlags flags;
 };
 

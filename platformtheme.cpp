@@ -7,7 +7,7 @@ PlatformTheme::PlatformTheme()
 {
     settings = new QSettings("theSuite", "ts-qtplatform");
 
-    {
+    if (QX11Info::isPlatformX11()) {
         //Load cursor library
         QLibrary xc("/usr/lib/libXcursor");
 
@@ -34,22 +34,31 @@ PlatformTheme::PlatformTheme()
     }
     //oldSignalHandler = signal(SIGTSTP, catch_signal);
 
-    themeUpdate = new ThemeUpdate();
-    themeThread = new ThemeCheckThread();
-    QObject::connect(themeThread, SIGNAL(UpdateTheme()), themeUpdate, SLOT(UpdateTheme()));
-    themeThread->start();
+    QObject::connect(&themeThread, SIGNAL(UpdateTheme()), &themeUpdate, SLOT(UpdateTheme()));
+    themeThread.start();
 }
 
 ThemeCheckThread::ThemeCheckThread(QObject *parent) : QThread(parent) {
     settings = new QSettings("theSuite", "ts-qtplatform");
+    pollSettingsTimer.moveToThread(this);
+}
+
+ThemeCheckThread::~ThemeCheckThread() {
+    settings->deleteLater();
 }
 
 ThemeUpdate::ThemeUpdate(QObject *parent) : QObject(parent) {
     settings = new QSettings("theSuite", "ts-qtplatform");
 }
 
+ThemeUpdate::~ThemeUpdate() {
+    settings->deleteLater();
+}
+
 void ThemeUpdate::UpdateTheme() {
-    QApplication::setStyle(QStyleFactory::create(settings->value("style/name", "contemporary").toString()));
+    if (QApplication::applicationName() != "QtCreator") {
+        QApplication::setStyle(QStyleFactory::create(settings->value("style/name", "contemporary").toString()));
+    }
 }
 
 void ThemeCheckThread::run() {
@@ -57,36 +66,40 @@ void ThemeCheckThread::run() {
     currentColor = settings->value("color/type", "dark").toString();
     currentAccent = settings->value("color/accent", 0).toInt();
 
-    pollSettingsTimer = new QTimer();
-    pollSettingsTimer->setInterval(1000);
-    pollSettingsTimer->connect(pollSettingsTimer, &QTimer::timeout, [=] {
-        QSettings* settings = new QSettings("theSuite", "ts-qtplatform");
+    //pollSettingsTimer = new QTimer();
+    pollSettingsTimer.setInterval(1000);
+    pollSettingsTimer.connect(&pollSettingsTimer, &QTimer::timeout, [=] {
+        QSettings settings("theSuite", "ts-qtplatform");
         bool reloadStyle = false;
-        if (currentStyle != settings->value("style/name", "contemporary").toString()) {
+        if (currentStyle != settings.value("style/name", "contemporary").toString()) {
             reloadStyle = true;
         }
-        currentStyle = settings->value("style/name", "contemporary").toString();
+        currentStyle = settings.value("style/name", "contemporary").toString();
 
-        if (currentColor != settings->value("color/type", "dark").toString()) {
+        if (currentColor != settings.value("color/type", "dark").toString()) {
             reloadStyle = true;
         }
-        currentColor = settings->value("color/type", "dark").toString();
+        currentColor = settings.value("color/type", "dark").toString();
 
-        if (currentAccent != settings->value("color/accent", 0).toInt()) {
+        if (currentAccent != settings.value("color/accent", 0).toInt()) {
             reloadStyle = true;
         }
-        currentAccent = settings->value("color/accent", 0).toInt();
+        currentAccent = settings.value("color/accent", 0).toInt();
+
+        if (QApplication::applicationName() == "QtCreator") {
+            reloadStyle = false;
+        }
 
         if (reloadStyle) {
             emit UpdateTheme();
         }
     });
-    pollSettingsTimer->start();
+    pollSettingsTimer.start();
 
     this->exec();
 
-    pollSettingsTimer->stop();
-    pollSettingsTimer->deleteLater();
+    pollSettingsTimer.stop();
+    //pollSettingsTimer->deleteLater();
 }
 
 void catch_signal(int sig) {
@@ -101,10 +114,7 @@ void catch_signal(int sig) {
 PlatformTheme::~PlatformTheme() {
     signal(SIGTSTP, oldSignalHandler);
     settings->deleteLater();
-    themeThread->quit();
-    themeThread->deleteLater();
-    themeUpdate->deleteLater();
-    //pollSettingsTimer->deleteLater();
+    themeThread.quit();
 }
 
 QVariant PlatformTheme::themeHint(ThemeHint hint) const {
@@ -115,6 +125,8 @@ QVariant PlatformTheme::themeHint(ThemeHint hint) const {
             return settings->value("icons/theme", "contemporary").toString();
         case QPlatformTheme::SystemIconFallbackThemeName:
             return settings->value("icons/themeFallback", "contemporary").toString();
+        case QPlatformTheme::PasswordMaskCharacter:
+            return QChar(0x2022 /* Bullet character */);
         case QPlatformTheme::ItemViewActivateItemOnSingleClick:
             return true;
         case QPlatformTheme::UiEffects:
@@ -155,7 +167,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
         QColor highlightText;
 
         QString colourType = settings->value("color/type", "dark").toString();
-        if (colourType == "dark") { //Use dark colors
+        if (colourType == "dark" || colourType == "black") { //Use dark colors
             //Get Button Color
             switch (settings->value("color/accent", 0).toInt()) {
             case 0: //Blue
@@ -201,10 +213,16 @@ const QPalette* PlatformTheme::palette(Palette type) const {
             }
 
             //Set Normal colors
-            pal->setColor(QPalette::Window, greyscale(40));
+            if (colourType == "dark") {
+                pal->setColor(QPalette::Window, greyscale(40));
+                pal->setColor(QPalette::Base, greyscale(40));
+                pal->setColor(QPalette::AlternateBase, greyscale(60));
+            } else { //Black
+                pal->setColor(QPalette::Window, greyscale(0));
+                pal->setColor(QPalette::Base, greyscale(0));
+                pal->setColor(QPalette::AlternateBase, greyscale(40));
+            }
             pal->setColor(QPalette::WindowText, greyscale(255));
-            pal->setColor(QPalette::Base, greyscale(40));
-            pal->setColor(QPalette::AlternateBase, greyscale(60));
             pal->setColor(QPalette::Text, greyscale(255));
             pal->setColor(QPalette::ToolTipText, greyscale(255));
 
@@ -356,11 +374,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 const QFont* PlatformTheme::font(Font type) const {
     QFont* font;
     QString defaultFont;
-    //if (QFontDatabase().families().contains("Contemporary")) {
-        defaultFont = "Contemporary";
-    /*} else {
-        defaultFont = "Noto Sans";
-    }*/
+    defaultFont = "Contemporary";
 
     switch (type) {
         case FixedFont:

@@ -10,7 +10,7 @@ CONFIG   += c++14 plugin
 TARGET = ts
 TEMPLATE = lib
 
-DEFINES += TSQTPLAaTFORM_LIBRARY
+DEFINES += TSQTPLATFORM_LIBRARY
 
 SOURCES += platformtheme.cpp \
     plugin.cpp \

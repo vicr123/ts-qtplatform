@@ -28,12 +28,13 @@ class ThemeCheckThread : public QThread
 
 public:
     explicit ThemeCheckThread(QObject* parent = NULL);
+    ~ThemeCheckThread();
 
 signals:
     void UpdateTheme();
 
 private:
-    QTimer* pollSettingsTimer;
+    QTimer pollSettingsTimer;
     QString currentStyle;
     QString currentColor;
     int currentAccent;
@@ -46,6 +47,7 @@ class ThemeUpdate : public QObject
     Q_OBJECT
 public:
     explicit ThemeUpdate(QObject* parent = NULL);
+        ~ThemeUpdate();
 
 public slots:
     void UpdateTheme();
@@ -76,10 +78,8 @@ private:
     QSettings* settings;
     QMap<QString, IconEngine*> iconEngines;
 
-    ThemeUpdate* themeUpdate;
-    ThemeCheckThread* themeThread;
-
-    QFont* defaultFont;
+    ThemeUpdate themeUpdate;
+    ThemeCheckThread themeThread;
 };
 
 #endif // PLATFORMTHEME_H

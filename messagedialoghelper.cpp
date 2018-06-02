@@ -69,15 +69,18 @@ void MessageDialogHelper::updateWindowOptions() {
     switch (options().data()->icon()) {
         case QMessageDialogOptions::Warning:
             dialogWindow->setIcon(QIcon::fromTheme("dialog-warning"));
+            dialogWindow->setSliceColor(QColor(150, 100, 0));
             break;
         case QMessageDialogOptions::Critical:
             dialogWindow->setIcon(QIcon::fromTheme("dialog-error"));
+            dialogWindow->setSliceColor(QColor(150, 0, 0));
             break;
         case QMessageDialogOptions::Question:
             dialogWindow->setIcon(QIcon::fromTheme("dialog-question"));
             break;
         case QMessageDialogOptions::Information:
             dialogWindow->setIcon(QIcon::fromTheme("dialog-information"));
+            dialogWindow->setSliceColor(QColor(0, 100, 200));
             break;
     }
 }
