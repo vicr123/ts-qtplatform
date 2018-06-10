@@ -34,17 +34,17 @@ PlatformTheme::PlatformTheme()
     }
     //oldSignalHandler = signal(SIGTSTP, catch_signal);
 
-    QObject::connect(&themeThread, SIGNAL(UpdateTheme()), &themeUpdate, SLOT(UpdateTheme()));
-    themeThread.start();
+    themeThread = new ThemeCheckThread();
+    QObject::connect(themeThread, SIGNAL(UpdateTheme()), &themeUpdate, SLOT(UpdateTheme()));
+    themeThread->start();
 }
 
 ThemeCheckThread::ThemeCheckThread(QObject *parent) : QThread(parent) {
-    settings = new QSettings("theSuite", "ts-qtplatform");
-    pollSettingsTimer.moveToThread(this);
+
 }
 
 ThemeCheckThread::~ThemeCheckThread() {
-    settings->deleteLater();
+
 }
 
 ThemeUpdate::ThemeUpdate(QObject *parent) : QObject(parent) {
@@ -62,13 +62,15 @@ void ThemeUpdate::UpdateTheme() {
 }
 
 void ThemeCheckThread::run() {
+    settings = new QSettings("theSuite", "ts-qtplatform");
+    pollSettingsTimer = new QTimer();
+
     currentStyle = settings->value("style/name", "contemporary").toString();
     currentColor = settings->value("color/type", "dark").toString();
     currentAccent = settings->value("color/accent", 0).toInt();
 
-    //pollSettingsTimer = new QTimer();
-    pollSettingsTimer.setInterval(1000);
-    pollSettingsTimer.connect(&pollSettingsTimer, &QTimer::timeout, [=] {
+    pollSettingsTimer->setInterval(1000);
+    pollSettingsTimer->connect(pollSettingsTimer, &QTimer::timeout, [=] {
         QSettings settings("theSuite", "ts-qtplatform");
         bool reloadStyle = false;
         if (currentStyle != settings.value("style/name", "contemporary").toString()) {
@@ -87,6 +89,7 @@ void ThemeCheckThread::run() {
         currentAccent = settings.value("color/accent", 0).toInt();
 
         if (QApplication::applicationName() == "QtCreator") {
+            //Specifically ignore Qt Creator; it tends to crash :(
             reloadStyle = false;
         }
 
@@ -94,12 +97,13 @@ void ThemeCheckThread::run() {
             emit UpdateTheme();
         }
     });
-    pollSettingsTimer.start();
+    pollSettingsTimer->start();
 
     this->exec();
 
-    pollSettingsTimer.stop();
-    //pollSettingsTimer->deleteLater();
+    pollSettingsTimer->stop();
+    pollSettingsTimer->deleteLater();
+    settings->deleteLater();
 }
 
 void catch_signal(int sig) {
@@ -112,9 +116,10 @@ void catch_signal(int sig) {
 }
 
 PlatformTheme::~PlatformTheme() {
+    themeThread->quit();
+    themeThread->deleteLater();
     signal(SIGTSTP, oldSignalHandler);
     settings->deleteLater();
-    themeThread.quit();
 }
 
 QVariant PlatformTheme::themeHint(ThemeHint hint) const {

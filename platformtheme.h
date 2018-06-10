@@ -34,7 +34,7 @@ signals:
     void UpdateTheme();
 
 private:
-    QTimer pollSettingsTimer;
+    QTimer* pollSettingsTimer;
     QString currentStyle;
     QString currentColor;
     int currentAccent;
@@ -79,7 +79,7 @@ private:
     QMap<QString, IconEngine*> iconEngines;
 
     ThemeUpdate themeUpdate;
-    ThemeCheckThread themeThread;
+    ThemeCheckThread* themeThread;
 };
 
 #endif // PLATFORMTHEME_H
