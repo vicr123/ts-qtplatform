@@ -1,12 +1,15 @@
 #include "messagedialog.h"
 #include "ui_messagedialog.h"
 
+extern float getDPIScaling();
+
 MessageDialog::MessageDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MessageDialog)
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+    this->resize(this->size() * getDPIScaling());
 }
 
 MessageDialog::~MessageDialog()
@@ -26,7 +29,7 @@ void MessageDialog::setText(QString text) {
 void MessageDialog::setIcon(QIcon icon) {
     this->setWindowIcon(icon);
 
-    ui->iconLabel->setPixmap(icon.pixmap(32, 32));
+    ui->iconLabel->setPixmap(icon.pixmap(32 * getDPIScaling(), 32 * getDPIScaling()));
 }
 
 void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons) {
@@ -239,10 +242,10 @@ void MessageDialog::paintEvent(QPaintEvent *event) {
     if (sliceColor.alpha() != 0) {
         {
             QPolygon p;
-            p.append(QPoint(this->width() - 75, 0));
+            p.append(QPoint(this->width() - 75 * getDPIScaling(), 0));
             p.append(QPoint(this->width(), 0));
             p.append(QPoint(this->width(), this->height()));
-            p.append(QPoint(this->width() - 100, this->height()));
+            p.append(QPoint(this->width() - 100 * getDPIScaling(), this->height()));
 
             QColor c = sliceColor;
             c.setAlpha(127);
@@ -254,10 +257,10 @@ void MessageDialog::paintEvent(QPaintEvent *event) {
 
         {
             QPolygon p;
-            p.append(QPoint(this->width() - 50, 0));
+            p.append(QPoint(this->width() - 50 * getDPIScaling(), 0));
             p.append(QPoint(this->width(), 0));
             p.append(QPoint(this->width(), this->height()));
-            p.append(QPoint(this->width() - 75, this->height()));
+            p.append(QPoint(this->width() - 75 * getDPIScaling(), this->height()));
 
             painter.setPen(Qt::transparent);
             painter.setBrush(sliceColor);

@@ -56,6 +56,21 @@ private:
     QSettings* settings;
 };
 
+class TouchFilter : public QObject
+{
+    Q_OBJECT
+    public:
+        explicit TouchFilter(QObject* parent = nullptr);
+        ~TouchFilter();
+
+        void showCursor();
+        void hideCursor();
+
+    private:
+        bool eventFilter(QObject* watched, QEvent* event);
+        bool cursorHidden = false;
+};
+
 class TSQTPLATFORMSHARED_EXPORT PlatformTheme : public QPlatformTheme
 {
 
@@ -80,6 +95,7 @@ private:
 
     ThemeUpdate themeUpdate;
     ThemeCheckThread* themeThread;
+    TouchFilter* touchFilter;
 };
 
 #endif // PLATFORMTHEME_H

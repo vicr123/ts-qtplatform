@@ -3,10 +3,13 @@
 void catch_signal(int signal);
 __sighandler_t oldSignalHandler;
 
+#include <QScrollerProperties>
+
 PlatformTheme::PlatformTheme()
 {
     settings = new QSettings("theSuite", "ts-qtplatform");
 
+    //oldSignalHandler = signal(SIGTSTP, catch_signal);
     if (QX11Info::isPlatformX11()) {
         //Load cursor library
         QLibrary xc("/usr/lib/libXcursor");
@@ -32,11 +35,18 @@ PlatformTheme::PlatformTheme()
             XFreeCursor(QX11Info::display(), cursor);
         }
     }
-    //oldSignalHandler = signal(SIGTSTP, catch_signal);
 
     themeThread = new ThemeCheckThread();
     QObject::connect(themeThread, SIGNAL(UpdateTheme()), &themeUpdate, SLOT(UpdateTheme()));
     themeThread->start();
+
+    touchFilter = new TouchFilter();
+    touchFilter->showCursor();
+
+    QScrollerProperties scrollerProperties;
+    scrollerProperties.setScrollMetric(QScrollerProperties::OvershootDragResistanceFactor, 0.1);
+    scrollerProperties.setScrollMetric(QScrollerProperties::OvershootScrollDistanceFactor, 0.1);
+    QScrollerProperties::setDefaultScrollerProperties(scrollerProperties);
 }
 
 ThemeCheckThread::ThemeCheckThread(QObject *parent) : QThread(parent) {
@@ -53,6 +63,46 @@ ThemeUpdate::ThemeUpdate(QObject *parent) : QObject(parent) {
 
 ThemeUpdate::~ThemeUpdate() {
     settings->deleteLater();
+}
+
+TouchFilter::TouchFilter(QObject* parent) : QObject(parent) {
+    QApplication::instance()->installEventFilter(this);
+}
+
+TouchFilter::~TouchFilter() {
+
+}
+
+void TouchFilter::showCursor() {
+    if (!cursorHidden) return;
+
+    QApplication::restoreOverrideCursor();
+
+    cursorHidden = false;
+}
+
+void TouchFilter::hideCursor() {
+    if (cursorHidden) return;
+
+    QCursor c;
+    c.setShape(Qt::BlankCursor);
+    QApplication::setOverrideCursor(c);
+
+    cursorHidden = true;
+}
+
+bool TouchFilter::eventFilter(QObject* watched, QEvent* event) {
+    if (event->type() == QEvent::TouchBegin || event->type() == QEvent::TouchUpdate || event->type() == QEvent::TouchEnd) {
+        //Hide the cursor
+        hideCursor();
+    } else if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonRelease) {
+        QMouseEvent* e = (QMouseEvent*) event;
+        if (e->source() != Qt::MouseEventSynthesizedByQt) {
+            //Show the cursor
+            showCursor();
+        }
+    }
+    return false;
 }
 
 void ThemeUpdate::UpdateTheme() {
@@ -116,6 +166,7 @@ void catch_signal(int sig) {
 }
 
 PlatformTheme::~PlatformTheme() {
+    touchFilter->deleteLater();
     themeThread->quit();
     themeThread->deleteLater();
     signal(SIGTSTP, oldSignalHandler);
