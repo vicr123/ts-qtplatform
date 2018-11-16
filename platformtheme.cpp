@@ -4,10 +4,16 @@ void catch_signal(int signal);
 __sighandler_t oldSignalHandler;
 
 #include <QScrollerProperties>
+#include <QTranslator>
 
 PlatformTheme::PlatformTheme()
 {
     settings = new QSettings("theSuite", "ts-qtplatform");
+
+    //Install translations
+    QTranslator localTranslator;
+    localTranslator.load(QLocale::system().name(), "/usr/share/theshell/ts-qtplatform/translations");
+    QApplication::installTranslator(&localTranslator);
 
     //oldSignalHandler = signal(SIGTSTP, catch_signal);
     if (QX11Info::isPlatformX11()) {
@@ -284,7 +290,7 @@ const QPalette* PlatformTheme::palette(Palette type) const {
 
             pal->setColor(QPalette::Disabled, QPalette::WindowText, greyscale(150));
         } else if (colourType == "light") { //Use light colors
-
+            QColor windowCol, altWindowCol;
             //Get Button Color
             switch (settings->value("color/accent", 0).toInt()) {
             case 0: //Blue
@@ -294,14 +300,18 @@ const QPalette* PlatformTheme::palette(Palette type) const {
                 highlightText = greyscale(0);
                 buttonDisabledCol = QColor(0, 150, 200);
                 buttonDisabledText = greyscale(100);
+                windowCol = QColor(225, 225, 235);
+                altWindowCol = QColor(215, 215, 225);
                 break;
             case 1: //Green
-                buttonCol = QColor(0, 255, 128);
+                buttonCol = QColor(36, 175, 62);
                 buttonText = greyscale(0);
-                highlightCol = QColor(0, 255, 0);
+                highlightCol = QColor(45, 220, 77);
                 highlightText = greyscale(0);
-                buttonDisabledCol = QColor(0, 150, 50);
+                buttonDisabledCol = QColor(33, 163, 57);
                 buttonDisabledText = greyscale(150);
+                windowCol = QColor(225, 235, 225);
+                altWindowCol = QColor(215, 225, 215);
                 break;
             case 2: //Orange
                 buttonCol = QColor(255, 100, 0);
@@ -310,6 +320,8 @@ const QPalette* PlatformTheme::palette(Palette type) const {
                 highlightText = greyscale(0);
                 buttonDisabledCol = QColor(150, 50, 0);
                 buttonDisabledText = greyscale(150);
+                windowCol = QColor(235, 230, 220);
+                altWindowCol = QColor(225, 220, 210);
                 break;
             case 3: //Pink
                 buttonCol = QColor(255, 0, 255);
@@ -318,6 +330,8 @@ const QPalette* PlatformTheme::palette(Palette type) const {
                 highlightText = greyscale(0);
                 buttonDisabledCol = QColor(100, 0, 100);
                 buttonDisabledText = greyscale(150);
+                windowCol = QColor(235, 225, 235);
+                altWindowCol = QColor(225, 215, 225);
                 break;
             case 4: //Turquoise
                 buttonCol = QColor(0, 200, 150);
@@ -326,14 +340,16 @@ const QPalette* PlatformTheme::palette(Palette type) const {
                 highlightText = greyscale(0);
                 buttonDisabledCol = QColor(0, 150, 150);
                 buttonDisabledText = greyscale(150);
+                windowCol = QColor(220, 230, 235);
+                altWindowCol = QColor(210, 220, 225);
                 break;
             }
 
             //Set Normal colors
-            pal->setColor(QPalette::Window, greyscale(235));
+            pal->setColor(QPalette::Window, windowCol);
             pal->setColor(QPalette::WindowText, greyscale(0));
-            pal->setColor(QPalette::Base, greyscale(235));
-            pal->setColor(QPalette::AlternateBase, greyscale(215));
+            pal->setColor(QPalette::Base, windowCol);
+            pal->setColor(QPalette::AlternateBase, altWindowCol);
             pal->setColor(QPalette::Text, greyscale(0));
             pal->setColor(QPalette::ToolTipText, greyscale(0));
 
