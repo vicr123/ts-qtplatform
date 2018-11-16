@@ -4,11 +4,6 @@
 <context>
     <name>FileDialog</name>
     <message>
-        <location filename="../filedialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../filedialog.ui" line="25"/>
         <source>Select a file</source>
         <translation type="unfinished"></translation>
@@ -19,7 +14,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../filedialog.ui" line="57"/>
+        <location filename="../filedialog.ui" line="58"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
