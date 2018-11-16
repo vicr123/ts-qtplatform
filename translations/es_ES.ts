@@ -27,21 +27,6 @@
 <context>
     <name>MessageDialog</name>
     <message>
-        <location filename="../messagedialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../messagedialog.ui" line="89"/>
-        <source>Title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../messagedialog.ui" line="102"/>
-        <source>&amp;Message</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../messagedialog.cpp" line="49"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
