@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" sourcelanguage="en_US">
+<TS version="2.1" sourcelanguage="en_US" language="ur_PK">
 <context>
     <name>FileDialog</name>
     <message>
@@ -29,7 +29,7 @@
     <message>
         <location filename="../messagedialog.cpp" line="60"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>جی</translation>
     </message>
     <message>
         <location filename="../messagedialog.cpp" line="71"/>
