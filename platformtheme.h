@@ -88,14 +88,19 @@ public:
     QPlatformDialogHelper* createPlatformDialogHelper(DialogType type) const override;
     bool usePlatformNativeDialog(DialogType type) const override;
 
+    void updateTheme();
+
 private:
     QColor greyscale(int intensity) const;
     QSettings* settings;
     QMap<QString, IconEngine*> iconEngines;
+    QTranslator localTranslator;
 
     ThemeUpdate themeUpdate;
     ThemeCheckThread* themeThread;
     TouchFilter* touchFilter;
+    QPalette* pal;
+    QFont *fnt, *smallFnt, *fixedFnt;
 };
 
 #endif // PLATFORMTHEME_H

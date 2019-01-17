@@ -25,7 +25,7 @@ public:
 public slots:
     void setTitle(QString title);
     void setText(QString text);
-    void setButtons(QPlatformDialogHelper::StandardButtons buttons);
+    void setButtons(QPlatformDialogHelper::StandardButtons buttons, QVector<QMessageDialogOptions::CustomButton> custom);
     void setIcon(QIcon icon);
     void setParent(QWindow* parent);
     void setWindowFlags(Qt::WindowFlags type);
@@ -37,6 +37,7 @@ public slots:
 
 signals:
     void clicked(QPlatformDialogHelper::StandardButton button, QPlatformDialogHelper::ButtonRole role);
+    void clickedCustom(int id);
 
 private:
     Ui::MessageDialog *ui;

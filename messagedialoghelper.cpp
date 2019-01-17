@@ -8,6 +8,7 @@ MessageDialogHelper::MessageDialogHelper() : QPlatformMessageDialogHelper()
 
 void MessageDialogHelper::exec() {
     updateWindowOptions();
+
     switch (options().data()->icon()) {
         case QMessageDialogOptions::Warning: {
             QSoundEffect* sound = new QSoundEffect();
@@ -64,7 +65,7 @@ void MessageDialogHelper::hide() {
 void MessageDialogHelper::updateWindowOptions() {
     dialogWindow->setTitle(options().data()->windowTitle());
     dialogWindow->setText(options().data()->text());
-    dialogWindow->setButtons(options().data()->standardButtons());
+    dialogWindow->setButtons(options().data()->standardButtons(), options()->customButtons());
 
     switch (options().data()->icon()) {
         case QMessageDialogOptions::Warning:

@@ -143,19 +143,21 @@ void IconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, Q
 
         if (!imageLoaded) {
             if (fileName == "") {
-                int currentSize;
-                for (int i = 0; i < listOfIcons.count(); i++) {
-                    iconInfo info = listOfIcons.at(i);
-                    if ((info.size > rect.width()) && (info.size < currentSize)) {
-                        fileName = info.fileName;
-                        currentSize = info.size;
-                        currentIcon = i;
+                if (listOfIcons.count() > 0) {
+                    int currentSize = listOfIcons.at(0).size;
+                    for (int i = 0; i < listOfIcons.count(); i++) {
+                        iconInfo info = listOfIcons.at(i);
+                        if ((info.size > rect.width()) && (info.size < currentSize)) {
+                            fileName = info.fileName;
+                            currentSize = info.size;
+                            currentIcon = i;
+                        }
                     }
-                }
 
-                if (fileName == "") {
-                    fileName = listOfIcons.first().fileName;
-                    currentIcon = 0;
+                    if (fileName == "") {
+                        fileName = listOfIcons.first().fileName;
+                        currentIcon = 0;
+                    }
                 }
             }
 

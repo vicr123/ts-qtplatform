@@ -32,7 +32,7 @@ void MessageDialog::setIcon(QIcon icon) {
     ui->iconLabel->setPixmap(icon.pixmap(32 * getDPIScaling(), 32 * getDPIScaling()));
 }
 
-void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons) {
+void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons, QVector<QMessageDialogOptions::CustomButton> customButtons) {
     QBoxLayout* l = (QBoxLayout*) ui->buttonWidget->layout();
     QLayoutItem* item;
     while ((item = l->takeAt(0)) != NULL) {
@@ -44,6 +44,18 @@ void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons) {
     l->addStretch();
 
     bool buttonVisible = false;
+
+    for (QMessageDialogOptions::CustomButton button : customButtons) {
+        QPushButton* b = new QPushButton();
+        b->setText(button.label);
+        connect(b, &QPushButton::clicked, [=] {
+            emit clicked((QPlatformDialogHelper::StandardButton) button.id, button.role);
+            this->close();
+        });
+        l->addWidget(b);
+        buttonVisible = true;
+    }
+
     if (buttons & QPlatformDialogHelper::Ok) {
         QPushButton* b = new QPushButton();
         b->setText(tr("OK"));
