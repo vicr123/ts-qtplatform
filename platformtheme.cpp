@@ -499,21 +499,21 @@ QPlatformDialogHelper* PlatformTheme::createPlatformDialogHelper(DialogType type
         case QPlatformTheme::FontDialog:
         case QPlatformTheme::ColorDialog:
         default:
-            return NULL;
+            return nullptr;
     }
 }
 
 QPlatformMenu* PlatformTheme::createPlatformMenu() const {
     //return new PlatformMenu();
-    return NULL;
+    return nullptr;
 }
 
 QPlatformMenuBar* PlatformTheme::createPlatformMenuBar() const {
     //return new PlatformMenuBar;
-    return NULL;
+    return nullptr;
 }
 
 QPlatformMenuItem* PlatformTheme::createPlatformMenuItem() const {
     //return new PlatformMenuItem;
-    return NULL;
+    return nullptr;
 }

@@ -4,18 +4,42 @@
 <context>
     <name>FileDialog</name>
     <message>
-        <location filename="../filedialog.ui" line="25"/>
+        <location filename="../filedialog.cpp" line="183"/>
         <source>Select a file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../filedialog.ui" line="47"/>
-        <source>Cancel</source>
+        <location filename="../filedialog.cpp" line="187"/>
+        <source>Select a folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../filedialog.ui" line="58"/>
-        <source>OK</source>
+        <location filename="../filedialog.cpp" line="190"/>
+        <source>Select some files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../filedialog.cpp" line="210"/>
+        <source>Overwrite %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../filedialog.cpp" line="212"/>
+        <source>Overwrite %n files?</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../filedialog.cpp" line="216"/>
+        <source>Overwrite Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../filedialog.ui" line="186"/>
+        <source>Filename</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

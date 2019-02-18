@@ -99,7 +99,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string notr="true">&amp;Message</string>
+          <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Message &lt;span style=&quot; font-weight:600;&quot;&gt;goes&lt;/span&gt; here&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
