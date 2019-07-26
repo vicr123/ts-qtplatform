@@ -4,24 +4,26 @@
 #include <qpa/qplatformdialoghelper.h>
 #include "messagedialog.h"
 #include <QWindow>
-#include <QSoundEffect>
 
 class MessageDialogHelper : public QPlatformMessageDialogHelper
 {
     Q_OBJECT
-public:
-    explicit MessageDialogHelper();
+    public:
+        explicit MessageDialogHelper();
 
-    void exec() override;
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
-    void hide() override;
-signals:
+        void exec() override;
+        bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
+        void hide() override;
 
-public slots:
+        static ButtonRole buttonRole(StandardButton button);
+    signals:
 
-private:
-    void updateWindowOptions();
-    MessageDialog* dialogWindow;
+    public slots:
+
+    private:
+        void updateWindowOptions();
+        void playDialogSound();
+        MessageDialog* dialogWindow;
 };
 
 #endif // MESSAGEDIALOGHELPER_H

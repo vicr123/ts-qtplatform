@@ -46,7 +46,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset theme="go-previous"/>
+        <iconset theme="go-previous">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -86,7 +87,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset theme="go-parent-folder"/>
+        <iconset theme="go-parent-folder">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="flat">
         <bool>true</bool>

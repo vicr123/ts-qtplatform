@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui x11extras gui-private multimedia concurrent svg
+QT       += gui x11extras gui-private multimedia concurrent svg thelib
 CONFIG   += c++14 plugin
 
 TARGET = ts

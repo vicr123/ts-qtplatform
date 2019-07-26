@@ -1,4 +1,5 @@
 #include "messagedialoghelper.h"
+#include <tsystemsound.h>
 
 MessageDialogHelper::MessageDialogHelper() : QPlatformMessageDialogHelper()
 {
@@ -7,55 +8,43 @@ MessageDialogHelper::MessageDialogHelper() : QPlatformMessageDialogHelper()
 }
 
 void MessageDialogHelper::exec() {
-    updateWindowOptions();
+    //updateWindowOptions();
+    //playDialogSound();
 
-    switch (options().data()->icon()) {
-        case QMessageDialogOptions::Warning: {
-            QSoundEffect* sound = new QSoundEffect();
-            sound->setSource(QUrl("qrc:/sounds/warn.wav"));
-            sound->play();
-            connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
-            break;
-        }
-
-        case QMessageDialogOptions::Critical: {
-            QSoundEffect* sound = new QSoundEffect();
-            sound->setSource(QUrl("qrc:/sounds/critical.wav"));
-            sound->play();
-            connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
-            break;
-        }
-    }
-
-    dialogWindow->setParent(NULL);
+    dialogWindow->setParent(nullptr);
     dialogWindow->exec();
 }
 
 bool MessageDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) {
     updateWindowOptions();
+    playDialogSound();
+
     dialogWindow->setWindowFlags(windowFlags);
     dialogWindow->setWindowModality(windowModality);
-    switch (options().data()->icon()) {
-        case QMessageDialogOptions::Warning: {
-            QSoundEffect* sound = new QSoundEffect();
-            sound->setSource(QUrl("qrc:/sounds/warn.wav"));
-            sound->play();
-            connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
-            break;
-        }
-
-        case QMessageDialogOptions::Critical: {
-            QSoundEffect* sound = new QSoundEffect();
-            sound->setSource(QUrl("qrc:/sounds/critical.wav"));
-            sound->play();
-            connect(sound, SIGNAL(playingChanged()), sound, SLOT(deleteLater()));
-            break;
-        }
-    }
 
     dialogWindow->setParent(parent);
     dialogWindow->show();
     return true;
+}
+
+void MessageDialogHelper::playDialogSound() {
+
+    switch (options()->icon()) {
+        case QMessageDialogOptions::Warning:
+            if (tSystemSound::isSoundEnabled("dialogwarn")) tSystemSound::play("dialog-warning");
+            break;
+        case QMessageDialogOptions::Critical:
+            if (tSystemSound::isSoundEnabled("dialogerr")) tSystemSound::play("dialog-error");
+            break;
+        case QMessageDialogOptions::Information:
+            if (tSystemSound::isSoundEnabled("dialoginfo")) tSystemSound::play("dialog-information");
+            break;
+        case QMessageDialogOptions::Question:
+            if (tSystemSound::isSoundEnabled("dialogquestion")) tSystemSound::play("dialog-question");
+            break;
+        case QMessageDialogOptions::NoIcon:
+            break;
+    }
 }
 
 void MessageDialogHelper::hide() {
@@ -63,11 +52,12 @@ void MessageDialogHelper::hide() {
 }
 
 void MessageDialogHelper::updateWindowOptions() {
-    dialogWindow->setTitle(options().data()->windowTitle());
-    dialogWindow->setText(options().data()->text());
-    dialogWindow->setButtons(options().data()->standardButtons(), options()->customButtons());
+    dialogWindow->setTitle(options()->windowTitle());
+    dialogWindow->setText(options()->text());
+    dialogWindow->setDetailedText(options()->detailedText());
+    dialogWindow->setButtons(options()->standardButtons(), options()->customButtons());
 
-    switch (options().data()->icon()) {
+    switch (options()->icon()) {
         case QMessageDialogOptions::Warning:
             dialogWindow->setIcon(QIcon::fromTheme("dialog-warning"));
             dialogWindow->setSliceColor(QColor(150, 100, 0));
@@ -83,5 +73,16 @@ void MessageDialogHelper::updateWindowOptions() {
             dialogWindow->setIcon(QIcon::fromTheme("dialog-information"));
             dialogWindow->setSliceColor(QColor(0, 100, 200));
             break;
+        case QMessageDialogOptions::NoIcon:
+            break;
+    }
+}
+
+MessageDialogHelper::ButtonRole MessageDialogHelper::buttonRole(StandardButton button) {
+    switch (button) {
+        case Discard:
+            return DestructiveRole;
+        default:
+            return QPlatformMessageDialogHelper::buttonRole(button);
     }
 }

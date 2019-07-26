@@ -45,74 +45,82 @@
 <context>
     <name>MessageDialog</name>
     <message>
-        <location filename="../messagedialog.cpp" line="61"/>
+        <location filename="../messagedialog.cpp" line="83"/>
+        <location filename="../messagedialog.cpp" line="88"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="72"/>
+        <location filename="../messagedialog.cpp" line="75"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="83"/>
-        <source>Yes to All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../messagedialog.cpp" line="94"/>
+        <location filename="../messagedialog.cpp" line="77"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="105"/>
-        <source>No to All</source>
+        <location filename="../messagedialog.cpp" line="76"/>
+        <source>Yes To All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="116"/>
-        <location filename="../messagedialog.cpp" line="217"/>
+        <location filename="../messagedialog.cpp" line="78"/>
+        <source>No To All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../messagedialog.cpp" line="84"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="127"/>
+        <location filename="../messagedialog.cpp" line="73"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="138"/>
+        <location filename="../messagedialog.cpp" line="74"/>
         <source>Save All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="149"/>
+        <location filename="../messagedialog.cpp" line="72"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="160"/>
+        <location filename="../messagedialog.cpp" line="71"/>
         <source>Discard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="171"/>
+        <location filename="../messagedialog.cpp" line="82"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="182"/>
+        <location filename="../messagedialog.cpp" line="79"/>
         <source>Abort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="193"/>
+        <location filename="../messagedialog.cpp" line="80"/>
         <source>Retry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../messagedialog.cpp" line="204"/>
+        <location filename="../messagedialog.cpp" line="81"/>
         <source>Ignore</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QMessageBox</name>
+    <message>
+        <location filename="../messagedialog.cpp" line="63"/>
+        <source>Show Details...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
