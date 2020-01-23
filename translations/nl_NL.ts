@@ -37,7 +37,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../filedialog.ui" line="186"/>
+        <location filename="../filedialog.ui" line="188"/>
         <source>Filename</source>
         <translation type="unfinished"></translation>
     </message>

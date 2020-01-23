@@ -36,7 +36,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../filedialog.ui" line="186"/>
+        <location filename="../filedialog.ui" line="188"/>
         <source>Filename</source>
         <translation type="unfinished"></translation>
     </message>
@@ -62,12 +62,12 @@
     <message>
         <location filename="../messagedialog.cpp" line="76"/>
         <source>Yes To All</source>
-        <translation type="unfinished"></translation>
+        <translation>Có với tất cả</translation>
     </message>
     <message>
         <location filename="../messagedialog.cpp" line="78"/>
         <source>No To All</source>
-        <translation type="unfinished"></translation>
+        <translation>Không với tất cả</translation>
     </message>
     <message>
         <location filename="../messagedialog.cpp" line="84"/>

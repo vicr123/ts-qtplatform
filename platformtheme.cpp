@@ -5,6 +5,8 @@ __sighandler_t oldSignalHandler;
 
 #include <QScrollerProperties>
 #include <QTranslator>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 PlatformTheme::PlatformTheme()
 {
@@ -488,6 +490,13 @@ bool PlatformTheme::usePlatformNativeDialog(DialogType type) const {
         default:
             return false;
     }
+}
+
+QIcon PlatformTheme::fileIcon(const QFileInfo&fileInfo, QPlatformTheme::IconOptions iconOptions) const
+{
+    QMimeDatabase db;
+    QMimeType mt = db.mimeTypeForFile(fileInfo);
+    return QIcon::fromTheme(mt.iconName(), QIcon::fromTheme("unknown"));
 }
 
 QPlatformDialogHelper* PlatformTheme::createPlatformDialogHelper(DialogType type) const {

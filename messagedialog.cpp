@@ -85,7 +85,7 @@ void MessageDialog::setButtons(QPlatformDialogHelper::StandardButtons buttons, Q
 
     if (shownButtons.count() == 0) {
         //Failsafe in case no buttons are provided
-        if (buttons & QPlatformDialogHelper::Ok) shownButtons.append(ButtonDef(tr("OK"), QPlatformDialogHelper::Ok, "dialog-ok"));
+        shownButtons.append(ButtonDef(tr("OK"), QPlatformDialogHelper::Ok, "dialog-ok"));
     }
 
     if (ui->detailedTextLabel->text() != "") {

@@ -87,6 +87,7 @@ public:
     QPlatformMenuItem* createPlatformMenuItem() const override;
     QPlatformDialogHelper* createPlatformDialogHelper(DialogType type) const override;
     bool usePlatformNativeDialog(DialogType type) const override;
+    QIcon fileIcon(const QFileInfo &fileInfo, QPlatformTheme::IconOptions iconOptions = nullptr) const override;
 
     void updateTheme();
 
